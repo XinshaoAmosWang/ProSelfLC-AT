@@ -19,7 +19,7 @@ are happy to provide if there is a request conditioned on academic use only and 
 Paper link: [ProSelfLC_arXiv_07062020.pdf](https://xinshaoamoswang.github.io/blogs/figsProSelfLC/ProSelfLC_arXiv_07062020.pdf)
 
 
-#### Lists of Content
+#### List of Content
 
 <!-- :+1: means being highly related to my personal research interest. -->
 0. [Storyline](https://xinshaoamoswang.github.io/blogs/2020-06-07-Progressive-self-label-correction/#storyline)

@@ -5,18 +5,19 @@
 
 
 
+
 For any specific discussion or potential future collaboration, please feel free to contact me. As a young
 researcher, your interest and star (citation) will mean a lot for me and my collaborators. For source codes, we
-are happy to provide if there is a request conditioned on academic use only and kindness to cite our work.
-<br />
-<br />
-@article{wang2020proselflc,<br />
-  title={ProSelfLC: Progressive Self Label Correction for Training Robust Deep Neural Networks},<br />
-  author={Wang, Xinshao and Hua, Yang and Kodirov, Elyor and Robertson, Neil M},<br />
-  journal={arXiv preprint arXiv:2005.03788},<br />
-  year={2020}}
-<br />
-Paper link: [ProSelfLC_arXiv_07062020.pdf](https://xinshaoamoswang.github.io/blogs/figsProSelfLC/ProSelfLC_arXiv_07062020.pdf)
+are happy to provide if there is a request conditioned on academic use only and kindness to cite this work.<br />
+Paper link: [ProSelfLC_arXiv_07062020.pdf](../figsProSelfLC/ProSelfLC_arXiv_07062020.pdf)
+```
+@article{wang2020proselflc,
+  title={ProSelfLC: Progressive Self Label Correction for Training Robust Deep Neural Networks},
+  author={Wang, Xinshao and Hua, Yang and Kodirov, Elyor and Robertson, Neil M},
+  journal={arXiv preprint arXiv:2005.03788},
+  year={2020}
+}
+```
 
 
 #### List of Content
@@ -30,3 +31,4 @@ Paper link: [ProSelfLC_arXiv_07062020.pdf](https://xinshaoamoswang.github.io/blo
 0. [Underlying Principle of ProSelfLC](https://xinshaoamoswang.github.io/blogs/2020-06-07-Progressive-self-label-correction/#underlying-principle-of-proselflc)
 0. [Mathematical Details of ProSelfLC](https://xinshaoamoswang.github.io/blogs/2020-06-07-Progressive-self-label-correction/#mathematical-details-of-proselflc)
 0. [Design Reasons of ProSelfLC](https://xinshaoamoswang.github.io/blogs/2020-06-07-Progressive-self-label-correction/#design-reasons-of-proselflc)
+0. [Related Interesting Work](https://xinshaoamoswang.github.io/blogs/2020-06-07-Progressive-self-label-correction/#related-interesting-work)

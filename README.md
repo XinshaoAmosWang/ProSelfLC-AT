@@ -9,7 +9,7 @@
 For any specific discussion or potential future collaboration, please feel free to contact me. As a young
 researcher, your interest and star (citation) will mean a lot for me and my collaborators. For source codes, we
 are happy to provide if there is a request conditioned on academic use only and kindness to cite this work.<br />
-Paper link: [ProSelfLC_arXiv_07062020.pdf](../figsProSelfLC/ProSelfLC_arXiv_07062020.pdf)
+Paper link: [ProSelfLC_arXiv_07062020.pdf](https://xinshaoamoswang.github.io/blogs/figsProSelfLC/ProSelfLC_arXiv_07062020.pdf)
 ```
 @article{wang2020proselflc,
   title={ProSelfLC: Progressive Self Label Correction 

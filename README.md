@@ -1,7 +1,7 @@
 ## ProSelfLC
 
 
-#### [Progressive Self Label Correction (ProSelfLC) for Training Robust Deep Neural Networks](https://xinshaoamoswang.github.io/blogs/2020-06-07-Progressive-self-label-correction/)
+#### [ProSelfLC: Progressive Self Label Correction for Training Robust Deep Neural Networks](https://xinshaoamoswang.github.io/blogs/2020-06-07-Progressive-self-label-correction/)
 
 
 

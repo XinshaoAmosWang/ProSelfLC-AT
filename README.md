@@ -30,4 +30,3 @@ Paper link: [ProSelfLC_arXiv_07062020.pdf](https://xinshaoamoswang.github.io/blo
 0. [Underlying Principle of ProSelfLC](https://xinshaoamoswang.github.io/blogs/2020-06-07-Progressive-self-label-correction/#underlying-principle-of-proselflc)
 0. [Mathematical Details of ProSelfLC](https://xinshaoamoswang.github.io/blogs/2020-06-07-Progressive-self-label-correction/#mathematical-details-of-proselflc)
 0. [Design Reasons of ProSelfLC](https://xinshaoamoswang.github.io/blogs/2020-06-07-Progressive-self-label-correction/#design-reasons-of-proselflc)
-{:.message}

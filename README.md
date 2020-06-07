@@ -17,7 +17,7 @@ are happy to provide if there is a request conditioned on academic use only and 
   year={2020}}
 <br />
 Paper link: [ProSelfLC_arXiv_07062020.pdf](https://xinshaoamoswang.github.io/blogs/figsProSelfLC/ProSelfLC_arXiv_07062020.pdf)
-{:.message}
+
 
 #### Lists of Content
 

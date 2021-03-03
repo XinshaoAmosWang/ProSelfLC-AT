@@ -1,4 +1,4 @@
-## ProSelfLC
+## ProSelfLC: CVPR 2021
 
 
 #### [ProSelfLC: Progressive Self Label Correction for Training Robust Deep Neural Networks](https://xinshaoamoswang.github.io/blogs/2020-06-07-Progressive-self-label-correction/)
@@ -12,7 +12,7 @@ Paper link: [https://arxiv.org/abs/2005.03788](https://arxiv.org/abs/2005.03788)
 #### Cite our work if you find it useful
 ```
 @article{wang2020proselflc,
-  title={ProSelfLC: Progressive Self Label Correction 
+  title={ProSelfLC: Progressive Self Label Correction
   for Training Robust Deep Neural Networks},
   author={Wang, Xinshao and Hua, Yang and Kodirov, Elyor and Robertson, Neil M},
   journal={arXiv preprint arXiv:2005.03788},

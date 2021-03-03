@@ -21,7 +21,7 @@ Paper link: [https://arxiv.org/abs/2005.03788](https://arxiv.org/abs/2005.03788)
 ```
 
 #### TO-DO Lists
-* Reviews from CVPR 2021
+* Release CVPR 2021 reviews
 * Camera-ready version with some revisions according to CVPR 2021 reviews
 
 #### Feedbacks

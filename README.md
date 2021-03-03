@@ -20,6 +20,10 @@ Paper link: [https://arxiv.org/abs/2005.03788](https://arxiv.org/abs/2005.03788)
 }
 ```
 
+#### TO-DO Lists
+* Reviews from CVPR 2021
+* Camera-ready version with some revisions according to CVPR 2021 reviews
+
 #### Feedbacks
 * [Reviews](./CMT_Review.pdf)
 * [Personal replies](./ProSelfLC_personal_response.pdf): This is an unofficial letter from me to let peers know better about our work.

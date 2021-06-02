@@ -6,23 +6,22 @@
 
 
 
-For any specific discussion or potential future collaboration, please feel free to contact me. As a young
-researcher, your interest and star (citation) will mean a lot for me and my collaborators. <br />
+For any specific discussion or potential future collaboration, please feel free to contact me. <br />
+
 Paper link: [https://arxiv.org/abs/2005.03788](https://arxiv.org/abs/2005.03788)
+
 #### Cite our work if you find it useful
 ```
-@article{wang2020proselflc,
-  title={ProSelfLC: Progressive Self Label Correction
+@inproceddings{wang2021proselflc,
+  title={ {ProSelfLC}: Progressive Self Label Correction
   for Training Robust Deep Neural Networks},
-  author={Wang, Xinshao and Hua, Yang and Kodirov, Elyor and Robertson, Neil M},
-  journal={arXiv preprint arXiv:2005.03788},
-  year={2020}
+  author={Wang, Xinshao and Hua, Yang and Kodirov, Elyor and Clifton, David A and Robertson, Neil M},
+  booktitle={CVPR},
+  year={2021}
 }
 ```
 
-#### TO-DO Lists
-* Release CVPR 2021 reviews
-* Camera-ready version with some revisions according to CVPR 2021 reviews
+#### [Link to Slide, Poster, Final version](https://www.dropbox.com/sh/tt8wgy722orda3e/AAAocpMbhfhF9Jdd6hKMKJYxa?dl=0)
 
 
 #### List of Content

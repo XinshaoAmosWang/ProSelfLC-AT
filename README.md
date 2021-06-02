@@ -21,8 +21,10 @@ Paper link: [https://arxiv.org/abs/2005.03788](https://arxiv.org/abs/2005.03788)
 }
 ```
 
-#### [Link to Slide, Poster, Final version](https://www.dropbox.com/sh/tt8wgy722orda3e/AAAocpMbhfhF9Jdd6hKMKJYxa?dl=0)
 
+#### [Link to Slide, Poster, Final version](./Poster_Slide)
+
+#### [Link to reviewers' comments](./Reviews)
 
 #### List of Content
 

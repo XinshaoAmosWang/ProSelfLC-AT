@@ -1,8 +1,8 @@
 import torch
 from torch import Tensor
 
-from .crossentropy import CrossEntropy
 from ...exceptions import ParamException
+from .crossentropy import CrossEntropy
 
 class ProSelfLC(CrossEntropy):
     """
@@ -26,12 +26,13 @@ class ProSelfLC(CrossEntropy):
     """
 
     def __init__(
-        self, total_time: int, exp_base: float = 1, counter: str = "iteration"
+        self,
+        params: dict = None,
     ) -> None:
         super().__init__()
-        self.total_time = total_time
-        self.exp_base = exp_base
-        self.counter = counter
+        self.total_time = params["total_time"]
+        self.exp_base = params["exp_base"]
+        self.counter = params["counter"]
         self.epsilon = None
 
         if not (self.exp_base > 0):

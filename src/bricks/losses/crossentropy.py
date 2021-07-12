@@ -20,7 +20,7 @@ class CrossEntropy(nn.Module):
     Outputs: scalar tensor, normalised by the number of examples.
     """
 
-    def __init__(self) -> None:
+    def __init__(self, params: dict = None) -> None:
         super().__init__()
 
     def forward(self, pred_probs: Tensor, target_probs: Tensor) -> Tensor:

@@ -1,6 +1,5 @@
 from torch import Tensor
 
-
 from .crossentropy import CrossEntropy
 
 class LabelSmoothing(CrossEntropy):
@@ -17,11 +16,12 @@ class LabelSmoothing(CrossEntropy):
     Outputs: scalar tensor, normalised by the number of examples.
     """
 
-    def __init__(self) -> None:
+    def __init__(self, params: dict = None) -> None:
         super().__init__()
+        self.epsilon = params["epsilon"]
 
     def forward(
-        self, pred_probs: Tensor, target_probs: Tensor, epsilon: float
+        self, pred_probs: Tensor, target_probs: Tensor, epsilon: float = None
     ) -> Tensor:
         """
         Inputs:
@@ -32,6 +32,8 @@ class LabelSmoothing(CrossEntropy):
         Outputs:
             Loss: a scalar tensor, normalised by N.
         """
+        if epsilon is None:
+            epsilon = self.epsilon
         class_num = pred_probs.shape[1]
         new_target_probs = (1 - epsilon) * target_probs + epsilon * 1.0 / class_num
         # reuse CrossEntropy's forward computation

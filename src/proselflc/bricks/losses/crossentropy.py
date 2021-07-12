@@ -2,7 +2,8 @@ import torch
 import torch.nn as nn
 from torch import Tensor
 
-from ...exceptions import ParamException
+from proselflc.exceptions import ParamException
+
 
 class CrossEntropy(nn.Module):
     """

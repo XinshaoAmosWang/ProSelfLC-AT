@@ -1,8 +1,10 @@
 import torch
 from torch import Tensor
 
-from ...exceptions import ParamException
+from proselflc.exceptions import ParamException
+
 from .crossentropy import CrossEntropy
+
 
 class ProSelfLC(CrossEntropy):
     """

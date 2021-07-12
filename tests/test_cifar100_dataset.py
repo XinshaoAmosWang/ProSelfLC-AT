@@ -1,6 +1,6 @@
 import unittest
 
-from proselflc.bricks.datain.datasets.cifar100dataset import CIFAR100Dataset
+from proselflc.slices.datain.datasets.cifar100dataset import CIFAR100Dataset
 
 
 class TestCIFAR100Dataset(unittest.TestCase):

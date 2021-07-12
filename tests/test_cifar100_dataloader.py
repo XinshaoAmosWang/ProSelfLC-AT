@@ -3,7 +3,7 @@ import unittest
 import torch
 from torch.utils.data import DataLoader
 
-from proselflc.bricks.datain.dataloaders.cifar100dataloader import CIFAR100DataLoader
+from proselflc.slices.datain.dataloaders.cifar100dataloader import CIFAR100DataLoader
 
 
 class TestCIFAR100DataLoader(unittest.TestCase):

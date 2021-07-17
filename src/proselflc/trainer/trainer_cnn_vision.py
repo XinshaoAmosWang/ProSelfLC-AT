@@ -6,7 +6,7 @@ from proselflc.optim.sgd_multistep import SGDMultiStep
 from proselflc.slicegetter.get_dataloader import DataLoaderPool
 from proselflc.slicegetter.get_lossfunction import LossPool
 from proselflc.slicegetter.get_network import NetworkPool
-from proselflc.trainer.utils import intlabel2onehot, logits2probs_softmax, save_figures
+from proselflc.trainer.utils import logits2probs_softmax, save_figures
 
 get_network = NetworkPool.get_network
 get_dataloader = DataLoaderPool.get_dataloader
@@ -154,23 +154,16 @@ class Trainer:
             # #############################
 
             # #############################
-            # label_int2onehot
-            class_num = logits.shape[1]
-            target_probs = intlabel2onehot(
-                device=self.device,
-                class_num=class_num,
-                intlabels=labels,
-            )
             # loss
             if self.loss_name != "proselflc":
                 loss = self.loss_criterion(
                     pred_probs=pred_probs,
-                    target_probs=target_probs,
+                    target_probs=labels,
                 )
             else:
                 loss = self.loss_criterion(
                     pred_probs=pred_probs,
-                    target_probs=target_probs,
+                    target_probs=labels,
                     cur_time=self.cur_time,
                 )
             # #############################
@@ -206,30 +199,24 @@ class Trainer:
             # #############################
 
             # #############################
-            # label_int2onehot
-            class_num = logits.shape[1]
-            target_probs = intlabel2onehot(
-                device=self.device,
-                class_num=class_num,
-                intlabels=labels,
-            )
             # loss
             if self.loss_name != "proselflc":
                 loss = self.loss_criterion(
                     pred_probs=pred_probs,
-                    target_probs=target_probs,
+                    target_probs=labels,
                 )
             else:
                 loss = self.loss_criterion(
                     pred_probs=pred_probs,
-                    target_probs=target_probs,
+                    target_probs=labels,
                     cur_time=self.cur_time,
                 )
             # #############################
 
             test_loss += loss.item()
             _, preds = pred_probs.max(1)
-            test_correct += preds.eq(labels).sum()
+            _, annotations = labels.max(1)
+            test_correct += preds.eq(annotations).sum()
 
         test_loss = test_loss / len(dataloader.dataset)
         test_accuracy = test_correct.item() / len(dataloader.dataset)

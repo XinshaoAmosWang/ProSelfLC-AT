@@ -16,6 +16,9 @@ class TestTrainer(unittest.TestCase):
                 "data_name": "cifar100",
                 "num_classes": 100,  # 1000
                 "network_name": "shufflenet",
+                #
+                #
+                "symmetric_noise_rate": 0.4,
             }
         )
 
@@ -51,27 +54,24 @@ class TestTrainer(unittest.TestCase):
                 ):
                     for self.params["lr"] in [0.01]:
                         k = k + 1
-                        # if k == 1:
-                        #    continue
                         dt_string = time.strftime("%Y%m%d-%H%M%S")
                         summary_writer_dir = (
-                            self.params["data_name"]
-                            + "_"
-                            + self.params["network_name"]
-                            + "_"
+                            "{:0>3}_".format(k)
                             + self.params["loss_name"]
                             + "_expbase_"
                             + str(self.params["exp_base"])
                             + "_"
-                            + str(self.params["total_time"])
-                            + "_"
                             + str(self.params["counter"])
+                            + "_"
+                            + str(self.params["total_time"])
                             + "_"
                             + dt_string
                         )
                         self.params["summary_writer_dir"] = (
                             "/home/xinshao/experiments/"
                             + self.params["data_name"]
+                            + "_symmetric_noise_rate_"
+                            + str(self.params["symmetric_noise_rate"])
                             + "/"
                             + self.params["network_name"]
                             + "/"

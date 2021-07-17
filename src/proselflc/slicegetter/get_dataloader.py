@@ -64,11 +64,7 @@ class DataLoaderPool:
         if params["data_name"] in cls.validated_dataloaders.keys():
             dataloader_class = cls.validated_dataloaders[params["data_name"]]
             # num_workers, batch size are not well sanity checked.
-            return dataloader_class(
-                train=params["train"],
-                num_workers=params["num_workers"],
-                batch_size=params["batch_size"],
-            )
+            return dataloader_class(params)
         else:
             error_msg = (
                 "The given data_name is "

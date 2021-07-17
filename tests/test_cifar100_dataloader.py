@@ -19,21 +19,27 @@ class TestCIFAR100DataLoader(unittest.TestCase):
 
     def test_constructor(self):
         cifar_trainloader = CIFAR100DataLoader(
-            train=True,
-            batch_size=1,
-            num_workers=1,
+            params={
+                "train": True,
+                "num_workers": 1,
+                "batch_size": 2,
+                "symmetric_noise_rate": 0,
+            }
         )
         cifar_testloader = CIFAR100DataLoader(
-            train=False,
-            batch_size=1,
-            num_workers=1,
+            params={
+                "train": False,
+                "num_workers": 1,
+                "batch_size": 2,
+                "symmetric_noise_rate": 0,
+            }
         )
         # evaluate
         self.assertTrue(isinstance(cifar_trainloader, DataLoader))
         self.assertTrue(isinstance(cifar_testloader, DataLoader))
         #
         self.assertEqual(cifar_trainloader.num_workers, 1)
-        self.assertEqual(cifar_trainloader.batch_size, 1)
+        self.assertEqual(cifar_trainloader.batch_size, 2)
 
         for dataloader in [cifar_trainloader, cifar_testloader]:
             for batch_index, (inputs, labels) in enumerate(dataloader):
@@ -42,6 +48,7 @@ class TestCIFAR100DataLoader(unittest.TestCase):
                 print(torch.min(inputs))
                 print(inputs.shape)
                 print(labels)
+                print(labels.shape)
                 return
 
 

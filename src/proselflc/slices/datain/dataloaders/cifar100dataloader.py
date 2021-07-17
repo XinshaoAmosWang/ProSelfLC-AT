@@ -2,8 +2,9 @@ from torch.utils.data import DataLoader
 
 from ..datasets.cifar100dataset import CIFAR100Dataset
 from ..transforms.cifar100transforms import (
-    CIFAR100_transform_test_data,
-    CIFAR100_transform_train_data,
+    cifar100_transform_intlabel2onehot,
+    cifar100_transform_test_data,
+    cifar100_transform_train_data,
 )
 
 
@@ -35,26 +36,29 @@ class CIFAR100DataLoader(DataLoader):
     # overwrite
     def __init__(
         self,
-        train: bool,
-        num_workers: int = 4,
-        batch_size: int = 128,  # to expose this to params
+        params: dict = {
+            "train": True,
+            "num_workers": 4,
+            "batch_size": 128,
+            "symmetric_noise_rate": 0,
+        },
     ) -> None:
-        if train:
+        if params["train"]:
             self._dataset = CIFAR100Dataset(
-                train=train,  # train set or test set
-                data_transform=CIFAR100_transform_train_data,
-                target_transform=None,
+                params,
+                data_transform=cifar100_transform_train_data,
+                target_transform=cifar100_transform_intlabel2onehot,
             )
         else:
             self._dataset = CIFAR100Dataset(
-                train=train,  # train set or test set
-                data_transform=CIFAR100_transform_test_data,
-                target_transform=None,
+                params,
+                data_transform=cifar100_transform_test_data,
+                target_transform=cifar100_transform_intlabel2onehot,
             )
 
         super().__init__(
             dataset=self._dataset,
-            shuffle=train,  # only if train, shuffle.
-            num_workers=num_workers,
-            batch_size=batch_size,
+            shuffle=params["train"],  # only if train, shuffle.
+            num_workers=params["num_workers"],
+            batch_size=params["batch_size"],
         )

@@ -13,6 +13,7 @@ __pycache__/*
 .*.swp
 */.ipynb_checkpoints/*
 .DS_Store
+*_glog
 
 # Project files
 .ropeproject
@@ -22,6 +23,7 @@ __pycache__/*
 .idea
 .vscode
 tags
+pyproject.toml
 
 # Package files
 *.egg
@@ -36,6 +38,7 @@ htmlcov/*
 junit.xml
 coverage.xml
 .pytest_cache/
+.coverage*
 
 # Build and docs folder/files
 build/*
@@ -49,6 +52,7 @@ MANIFEST
 
 # Per-project virtualenvs
 .venv*/
+.python-version
 
 # data files
-/datasets/cifar*
+/datasets/*

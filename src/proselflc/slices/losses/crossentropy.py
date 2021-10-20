@@ -46,5 +46,5 @@ class CrossEntropy(nn.Module):
 
         num_examples = pred_probs.shape[0]
         loss = torch.sum(target_probs * (-torch.log(pred_probs + 1e-6)), 1)
-        loss = sum(loss) / num_examples
+        loss = torch.sum(loss) / num_examples
         return loss

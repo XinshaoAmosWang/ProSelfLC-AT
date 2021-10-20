@@ -169,5 +169,5 @@ class ShuffleNetV2(nn.Module):
         return nn.Sequential(*layers)
 
 
-def shufflenetv2(params: dict = {}):
-    return ShuffleNetV2()
+def shufflenetv2(params: dict = {"num_classes": 100}):
+    return ShuffleNetV2(class_num=params["num_classes"])

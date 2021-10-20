@@ -10,11 +10,11 @@ CLASS_NUM = 100
 
 cifar100_transform_train_data = transforms.Compose(
     [
-        # transforms.RandomCrop(32, padding=4),  # standard
-        transforms.Pad(padding=[4, 4, 4, 4]),
-        transforms.RandomResizedCrop(
-            32, scale=(0.8, 1.0), ratio=(3.0 / 4.0, 4.0 / 3.0)
-        ),
+        transforms.RandomCrop(32, padding=4),  # standard
+        # transforms.Pad(padding=[4, 4, 4, 4]),
+        # transforms.RandomResizedCrop(
+        #    32, scale=(0.8, 1.0), ratio=(3.0 / 4.0, 4.0 / 3.0)
+        # ),
         transforms.RandomHorizontalFlip(),  # flip
         transforms.RandomRotation(15),  # rotation
         transforms.ToTensor(),

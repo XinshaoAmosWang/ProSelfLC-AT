@@ -16,7 +16,7 @@ class TestCIFAR100Dataset(unittest.TestCase):
         """
         pass
 
-    def test_usages_and_content(self):
+    def test_symmetric_noise_rate(self):
         cifar_train_dataset = CIFAR100Dataset(
             params={
                 "train": True,
@@ -67,6 +67,17 @@ class TestCIFAR100Dataset(unittest.TestCase):
             np.array(cifar_train_noisy.targets) != np.array(cifar_train_dataset.targets)
         ) / len(cifar_train_dataset.targets)
         self.assertTrue(noise_rate == 0.4)
+
+        cifar_test_clean = CIFAR100Dataset(
+            params={
+                "train": False,
+                "symmetric_noise_rate": 0.4,
+            }
+        )
+        noise_rate = sum(
+            np.array(cifar_test_clean.targets) != np.array(cifar_test_dataset.targets)
+        ) / len(cifar_test_dataset.targets)
+        self.assertTrue(noise_rate == 0.0)
 
 
 if __name__ == "__main__":

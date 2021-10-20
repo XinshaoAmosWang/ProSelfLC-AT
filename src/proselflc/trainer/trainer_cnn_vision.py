@@ -1,16 +1,21 @@
+import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
+import plotly.figure_factory as ff
 import torch
+from torch.utils.data import DataLoader
 
 from proselflc.exceptions import ParamException
-from proselflc.optim.sgd_multistep import SGDMultiStep
+from proselflc.optim.sgd_multistep import SGDMultiStep, WarmUpLR
 from proselflc.slicegetter.get_dataloader import DataLoaderPool
 from proselflc.slicegetter.get_lossfunction import LossPool
 from proselflc.slicegetter.get_network import NetworkPool
-from proselflc.trainer.utils import logits2probs_softmax, save_figures
+from proselflc.trainer.utils import logits2probs_softmax
 
 get_network = NetworkPool.get_network
 get_dataloader = DataLoaderPool.get_dataloader
 get_lossfunction = LossPool.get_lossfunction
+colorscale = [[0, "#4d004c"], [0.5, "#f2e5ff"], [1, "#ffffff"]]
 
 
 class Trainer:
@@ -59,71 +64,147 @@ class Trainer:
         self.testdataloader = get_dataloader(params)
         self.data_name = params["data_name"]
 
-        # loss function
+        self.total_epochs = params["total_epochs"]
+        # time tracker for proselflc only.
         self.loss_name = params["loss_name"]
+        if self.loss_name == "proselflc":
+            self.cur_time = 0
+            self.counter = params["counter"]
+            if self.counter == "iteration":
+                # affected by batch size.
+                params["total_iterations"] = self.total_epochs * len(
+                    self.traindataloader
+                )
+
+        # loss function
         self.loss_criterion = get_lossfunction(params)
 
         # TODO: create a getter for all optional optimisers
         # optim with optimser and lr scheduler
         self.optim = SGDMultiStep(net_params=self.network.parameters(), params=params)
-
-        self.total_time = params["total_time"]
-        # time tracker for proselflc only.
-        if self.loss_name == "proselflc":
-            self.cur_time = 0
-            self.counter = params["counter"]
+        self.warmup_epochs = params["warmup_epochs"]
+        self.optim.warmup_scheduler = WarmUpLR(
+            optimizer=self.optim.optimizer,
+            total_iters=len(self.traindataloader) * self.warmup_epochs,
+        )
 
         # logging misc ######################################
         # add summary writer
         self.summarydir = params["summary_writer_dir"]
         self.params = params
+        self.noisy_data_analysis_prep()
         self.init_logger()
         # logging misc ######################################
 
-    def train(self) -> None:
-        if self.loss_name == "proselflc" and self.counter == "iteration":
-            # to epoch
-            print(len(self.traindataloader))
-            self.total_time = self.total_time / len(self.traindataloader)
-            self.total_time = int(self.total_time)
-            if self.total_time < 2:
-                error_msg = (
-                    "self.total_time = "
-                    + str(self.total_time)
-                    + ", is too small. Please check settings of self.counter and"
-                    + "self.total_time. "
-                )
-                raise ParamException(error_msg)
+    def noisy_data_analysis_prep(self):
+        # special case for label noise
+        self.cleantraindataloader = None
+        sym_noisy_key = "symmetric_noise_rate"
+        if sym_noisy_key in self.params.keys() and self.params[sym_noisy_key] > 0.0:
+            # to get clean train data
+            self.params["train"] = True
+            self.noise_rate = self.params[sym_noisy_key]
+            self.params[sym_noisy_key] = 0.0
+            self.cleantraindataloader = get_dataloader(self.params)
+            self.params[sym_noisy_key] = self.noise_rate
 
+            mask_list = np.array(
+                self.cleantraindataloader._dataset.targets
+            ) == np.array(self.traindataloader._dataset.targets)
+
+            # clean and noisy subsets
+            clean_indexes = [list[0] for list in np.argwhere(mask_list)]
+            noisy_indexes = [list[0] for list in np.argwhere(np.invert(mask_list))]
+            assert len(noisy_indexes) == self.noise_rate * len(mask_list)
+            assert len(clean_indexes) == (1 - self.noise_rate) * len(mask_list)
+            clean_subset = torch.utils.data.Subset(
+                self.traindataloader._dataset,
+                clean_indexes,
+            )
+            noisy_subset = torch.utils.data.Subset(
+                self.traindataloader._dataset,
+                noisy_indexes,
+            )
+            cleaned_noisy_subset = torch.utils.data.Subset(
+                self.cleantraindataloader._dataset,
+                noisy_indexes,
+            )
+            self.clean_subloader = DataLoader(
+                dataset=clean_subset,
+                shuffle=False,
+                num_workers=self.params["num_workers"],
+                batch_size=self.params["batch_size"],
+            )
+            self.noisy_subloader = DataLoader(
+                dataset=noisy_subset,
+                shuffle=False,
+                num_workers=self.params["num_workers"],
+                batch_size=self.params["batch_size"],
+            )
+            self.cleaned_noisy_subloader = DataLoader(
+                dataset=cleaned_noisy_subset,
+                shuffle=False,
+                num_workers=self.params["num_workers"],
+                batch_size=self.params["batch_size"],
+            )
+
+    def init_logger(self):
+        self.accuracy_dynamics = {"epoch": []}
+        self.loss_dynamics = {"epoch": []}
+        self.dataloaders = {}
+        if self.cleantraindataloader is None:
+            # clean case
+            self.dataloaders = {
+                "clean_train": self.traindataloader,
+                "clean_test": self.testdataloader,
+            }
+        else:
+            # noisy data
+            self.dataloaders = {
+                # "clean_train": self.cleantraindataloader,
+                "clean_test": self.testdataloader,
+                # "noisy_train": self.traindataloader,
+                "noisy_subset": self.noisy_subloader,
+                "clean_subset": self.clean_subloader,
+                "cleaned_noisy_subset": self.cleaned_noisy_subloader,
+            }
+        for name in self.dataloaders.keys():
+            self.accuracy_dynamics[name] = []
+            self.loss_dynamics[name] = []
+
+    def train(self) -> None:
         # #############################
-        for epoch in range(1, self.total_time + 1):
+        for epoch in range(1, self.total_epochs + 1):
             # train one epoch
             self.train_one_epoch(
                 epoch=epoch,
                 dataloader=self.traindataloader,
             )
-            # evaluation one epoch
-            (loss, accuracy) = self.evaluation(
-                epoch=epoch,
-                dataloader=self.traindataloader,
-                data_usagename="traindata",
-            )
-            self.accuracy_dynamics["train"].append(accuracy)
-            self.loss_dynamics["train"].append(loss)
-
-            (loss, accuracy) = self.evaluation(
-                epoch=epoch,
-                dataloader=self.testdataloader,
-                data_usagename="testdata",
-            )
-
-            self.accuracy_dynamics["test"].append(accuracy)
-            self.loss_dynamics["test"].append(loss)
-
             # lr scheduler
-            self.optim.lr_scheduler.step()
-        # #############################
+            if epoch > self.warmup_epochs:
+                self.optim.lr_scheduler.step()
 
+            if epoch % self.params["eval_interval"] == 0:
+                print("Evaluating Network.....")
+                self.loss_dynamics["epoch"].append(epoch)
+                self.accuracy_dynamics["epoch"].append(epoch)
+                for dataloader_name, dataloader in self.dataloaders.items():
+                    (loss, accuracy) = self.evaluation(
+                        dataloader=dataloader,
+                    )
+                    self.loss_dynamics[dataloader_name].append(loss)
+                    self.accuracy_dynamics[dataloader_name].append(accuracy)
+
+                    print(
+                        dataloader_name
+                        + ": Epoch: {}, Loss: {:.4f}, Accuracy: {:.4f}".format(
+                            epoch,
+                            loss,
+                            accuracy,
+                        )
+                    )
+
+        # #############################
         self.sink_csv_figures()
 
     def train_one_epoch(self, epoch: int, dataloader) -> None:
@@ -136,6 +217,7 @@ class Trainer:
                 if self.counter == "epoch":
                     self.cur_time = epoch
                 else:
+                    # epoch counter to iteration counter
                     self.cur_time = (epoch - 1) * len(dataloader) + batch_index + 1
             # #############################
 
@@ -168,16 +250,26 @@ class Trainer:
                 )
             # #############################
 
-            # #############################
             # backward
             self.optim.optimizer.zero_grad()
             loss.backward()
+
             # update params
             self.optim.optimizer.step()
             # #############################
 
+            # warmup iteration-wise lr scheduler
+            if epoch <= self.warmup_epochs:
+                self.optim.warmup_scheduler.step()
+                # print("epoch={}, lr={}, loss={}, bidx={}".format(
+                #     epoch,
+                #     self.optim.optimizer.param_groups[0]["lr"],
+                #     loss.item(),
+                #     batch_index,
+                # ))
+
     @torch.no_grad()
-    def evaluation(self, epoch, dataloader, data_usagename: str):
+    def evaluation(self, dataloader):
         self.network.eval()
 
         test_loss = 0.0
@@ -220,75 +312,54 @@ class Trainer:
 
         test_loss = test_loss / len(dataloader.dataset)
         test_accuracy = test_correct.item() / len(dataloader.dataset)
-        print("Evaluating Network.....")
-        print(
-            data_usagename
-            + ": Epoch: {}, Average loss: {:.4f}, Accuracy: {:.4f}".format(
-                epoch,
-                test_loss,
-                test_accuracy,
-            )
-        )
-        self.txtwriter = open(
-            self.summarydir + "/learning_dynamics.txt",
-            "a",
-        )
-        self.txtwriter.write(
-            "epoch="
-            + str(epoch)
-            + ", "
-            + data_usagename
-            + ": "
-            + "loss="
-            + str(test_loss)
-            + ", "
-            + "accuracy="
-            + str(test_accuracy)
-            + "\n"
-        )
-        self.txtwriter.close()
 
         return test_loss, test_accuracy
 
-    def init_logger(self):
-        self.accuracy_dynamics = {
-            "train": [],
-            "test": [],
-        }
-        self.loss_dynamics = {
-            "train": [],
-            "test": [],
-        }
-
     def sink_csv_figures(self):
         # logging misc ######################################
-        # train finished: save figures
-        fig_save_path = self.summarydir + "/accuracy_dynamics.pdf"
-        y_inputs = [self.accuracy_dynamics["train"], self.accuracy_dynamics["test"]]
-        fig_legends = ["train accuracy", "test accuracy"]
-        fig_xlabel = "Epoch"
-        fig_ylabel = "Accuracy"
-        save_figures(fig_save_path, y_inputs, fig_legends, fig_xlabel, fig_ylabel)
-        df = pd.DataFrame(
-            {
-                fig_legends[0]: y_inputs[0],
-                fig_legends[1]: y_inputs[1],
-            }
+        accuracy_dynamics_df = pd.DataFrame(self.accuracy_dynamics)
+        loss_dynamics_df = pd.DataFrame(self.loss_dynamics)
+        tosink_dataframes = {
+            "accuracy": accuracy_dynamics_df,
+            "loss": loss_dynamics_df,
+        }
+        file_name = "_".join(tosink_dataframes.keys())
+        ########################
+        xlsx_writer = pd.ExcelWriter(
+            "{}/{}.xlsx".format(self.summarydir, file_name), engine="xlsxwriter"
         )
-        df.to_csv(
-            self.summarydir + "/accuracy_dynamics.csv", encoding="utf-8", index=False
-        )
-        #
-        fig_save_path = self.summarydir + "/loss_dynamics.pdf"
-        y_inputs = [self.loss_dynamics["train"], self.loss_dynamics["test"]]
-        fig_legends = ["train loss", "test loss"]
-        fig_ylabel = "Loss"
-        save_figures(fig_save_path, y_inputs, fig_legends, fig_xlabel, fig_ylabel)
-        df = pd.DataFrame(
-            {
-                fig_legends[0]: y_inputs[0],
-                fig_legends[1]: y_inputs[1],
-            }
-        )
-        df.to_csv(self.summarydir + "/loss_dynamics.csv", encoding="utf-8", index=False)
-        # logging misc ######################################
+        for dfname, dfdata in tosink_dataframes.items():
+            dfdata.to_excel(xlsx_writer, sheet_name=dfname)
+        xlsx_writer.close()
+
+        ########################
+        html_writer = open("{}/{}.html".format(self.summarydir, file_name), "w")
+        for dfname, dfdata in tosink_dataframes.items():
+            fig = ff.create_table(
+                dfdata,
+                index=True,
+                colorscale=colorscale,
+            )
+            # Make text size larger
+            for i in range(len(fig.layout.annotations)):
+                fig.layout.annotations[i].font.size = 12
+
+            html_writer.write(
+                "<p style="
+                + "text-align:center"
+                + ">{}</p>".format(dfname)
+                + fig.to_html()
+                + "<p>&nbsp;&nbsp;</p>"
+            )
+        html_writer.close()
+
+        ########################
+        # save figures
+        for dfname, dfdata in tosink_dataframes.items():
+            dfdata.index = dfdata["epoch"]
+            dfdata = dfdata.drop(columns=["epoch"])
+            dfdata.plot.line()
+            plt.savefig(
+                "{}/{}.pdf".format(self.summarydir, dfname),
+                dpi=100,
+            )

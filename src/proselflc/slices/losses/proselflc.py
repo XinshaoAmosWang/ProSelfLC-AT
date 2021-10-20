@@ -32,26 +32,27 @@ class ProSelfLC(CrossEntropy):
         params: dict = None,
     ) -> None:
         super().__init__()
-        self.total_time = params["total_time"]
+        self.total_epochs = params["total_epochs"]
         self.exp_base = params["exp_base"]
         self.counter = params["counter"]
         self.epsilon = None
+        self.transit_time_ratio = params["transit_time_ratio"]
 
-        if not (self.exp_base > 0):
+        if not (self.exp_base >= 0):
             error_msg = (
                 "self.exp_base = "
                 + str(self.exp_base)
                 + ". "
-                + "The exp_base has to be larger than zero. "
+                + "The exp_base has to be no less than zero. "
             )
             raise (ParamException(error_msg))
 
-        if not (isinstance(self.total_time, int) and self.total_time > 0):
+        if not (isinstance(self.total_epochs, int) and self.total_epochs > 0):
             error_msg = (
-                "self.counter = "
-                + str(self.total_time)
+                "self.total_epochs = "
+                + str(self.total_epochs)
                 + ". "
-                + "The counter has to be a positive integer. "
+                + "The total_epochs has to be a positive integer. "
             )
             raise (ParamException(error_msg))
 
@@ -62,23 +63,37 @@ class ProSelfLC(CrossEntropy):
                 + ". "
                 + "The counter has to be iteration or epoch. "
                 + "The training time is counted by eithor of them. "
-                + "The default option is iteration. "
             )
             raise (ParamException(error_msg))
 
+        if "total_iterations" in params.keys():
+            # only exist when counter == "iteration"
+            self.total_iterations = params["total_iterations"]
+
     def update_epsilon_progressive_adaptive(self, pred_probs, cur_time):
-        # global trust/knowledge
-        time_ratio_minus_half = torch.tensor(cur_time / self.total_time - 0.5)
-        global_trust = 1 / (1 + torch.exp(-self.exp_base * time_ratio_minus_half))
-        # example-level trust/knowledge
-        class_num = pred_probs.shape[1]
-        H_pred_probs = torch.sum(-pred_probs * torch.log(pred_probs + 1e-6), 1)
-        H_uniform = -torch.log(torch.tensor(1.0 / class_num))
-        example_trust = 1 - H_pred_probs / H_uniform
-        # the trade-off
-        self.epsilon = global_trust * example_trust
-        # from shape [N] to shape [N, 1]
-        self.epsilon = self.epsilon[:, None]
+        with torch.no_grad():
+            # global trust/knowledge
+            if self.counter == "epoch":
+                time_ratio_minus_half = torch.tensor(
+                    cur_time / self.total_epochs - self.transit_time_ratio
+                )
+            else:
+                time_ratio_minus_half = torch.tensor(
+                    cur_time / self.total_iterations - self.transit_time_ratio
+                )
+
+            global_trust = 1 / (1 + torch.exp(-self.exp_base * time_ratio_minus_half))
+            # example-level trust/knowledge
+            class_num = pred_probs.shape[1]
+            H_pred_probs = torch.sum(
+                -(pred_probs + 1e-12) * torch.log(pred_probs + 1e-12), 1
+            )
+            H_uniform = -torch.log(torch.tensor(1.0 / class_num))
+            example_trust = 1 - H_pred_probs / H_uniform
+            # the trade-off
+            self.epsilon = global_trust * example_trust
+            # from shape [N] to shape [N, 1]
+            self.epsilon = self.epsilon[:, None]
 
     def forward(
         self, pred_probs: Tensor, target_probs: Tensor, cur_time: int
@@ -92,16 +107,30 @@ class ProSelfLC(CrossEntropy):
         Outputs:
             Loss: a scalar tensor, normalised by N.
         """
-        if not (cur_time <= self.total_time and cur_time >= 0):
-            error_msg = (
-                "The cur_time = "
-                + str(cur_time)
-                + ". The total_time = "
-                + str(self.total_time)
-                + ". The cur_time has to be no larger than total time "
-                + "and no less than zero."
-            )
-            raise (ParamException(error_msg))
+        if self.counter == "epoch":
+            # cur_time indicate epoch
+            if not (cur_time <= self.total_epochs and cur_time >= 0):
+                error_msg = (
+                    "The cur_time = "
+                    + str(cur_time)
+                    + ". The total_time = "
+                    + str(self.total_epochs)
+                    + ". The cur_time has to be no larger than total time "
+                    + "and no less than zero."
+                )
+                raise (ParamException(error_msg))
+        else:  # self.counter == "iteration":
+            # cur_time indicate iteration
+            if not (cur_time <= self.total_iterations and cur_time >= 0):
+                error_msg = (
+                    "The cur_time = "
+                    + str(cur_time)
+                    + ". The total_time = "
+                    + str(self.total_iterations)
+                    + ". The cur_time has to be no larger than total time "
+                    + "and no less than zero."
+                )
+                raise (ParamException(error_msg))
 
         # update self.epsilon
         self.update_epsilon_progressive_adaptive(pred_probs, cur_time)

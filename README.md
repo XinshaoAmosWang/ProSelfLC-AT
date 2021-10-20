@@ -1,3 +1,5 @@
+
+
 ## ProSelfLC: CVPR 2021
 
 
@@ -20,6 +22,27 @@ Paper link: [https://arxiv.org/abs/2005.03788](https://arxiv.org/abs/2005.03788)
   year={2021}
 }
 ```
+
+## Install
+#### Set the Pipenv From Scratch
+* sudo apt update && sudo apt upgrade
+* sudo apt install python3.8
+* curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+* python3.8 get-pip.py
+* vim ~/.bashrc -> add `export PATH="/home/ubuntu/.local/bin:$PATH"` -> source ~/.bashrc
+* pip3 install pipenv
+
+#### Build env for this repo using pipenv
+* git clone `git@github.com:XinshaoAmosWang/ProSelfLC-CVPR2021.git`
+* cd ProSelfLC-CVPR2021
+* pipenv install -e .
+
+## How to use
+* cd ProSelfLC-CVPR2021
+* pipenv shell
+* `python tests/convnets/test_trainer_cnn_vision_cifar100_cce_convets.py`
+* `python tests/convnets/test_trainer_cnn_vision_cifar100_lscplc_covnets.py`
+* `python tests/convnets/test_trainer_cnn_vision_cifar100_proselflc_covnets.py`
 
 
 #### [Link to Slide, Poster, Final version](./Poster_Slide)

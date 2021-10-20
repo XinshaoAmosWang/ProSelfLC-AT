@@ -1,7 +1,7 @@
 import torch.nn as nn
 
 from proselflc.exceptions import ParamException
-from proselflc.slices.networks.shufflenet import shufflenet
+from proselflc.slices.networks.resnet import resnet18, resnet34
 from proselflc.slices.networks.shufflenetv2 import shufflenetv2
 
 
@@ -17,8 +17,9 @@ class NetworkPool:
     """
 
     validated_networks = {
-        "shufflenet": shufflenet,
-        "shufflenetv2": shufflenetv2,
+        "shufflenetv2": shufflenetv2,  # faster than shufflenet
+        "resnet18": resnet18,
+        "resnet34": resnet34,
     }
 
     untested_networks = {}

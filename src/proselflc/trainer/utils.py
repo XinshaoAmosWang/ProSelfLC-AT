@@ -20,6 +20,7 @@ def logits2probs_softmax(logits):
     return exp_logits / sum_logits
 
 
+@torch.no_grad()
 def intlabel2onehot(class_num, intlabel) -> np.ndarray:
     """
     intlabel in the class index: [0, class_num-1]

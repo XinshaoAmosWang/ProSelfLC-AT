@@ -12,7 +12,7 @@ For any specific discussion or potential future collaboration, please feel free 
 
 Paper link: [https://arxiv.org/abs/2005.03788](https://arxiv.org/abs/2005.03788)
 
-#### Cite our work if you find it useful
+#### Please kindly cite our work if you find the paper and this repo useful.
 ```
 @inproceddings{wang2021proselflc,
   title={ {ProSelfLC}: Progressive Self Label Correction
@@ -45,7 +45,17 @@ Paper link: [https://arxiv.org/abs/2005.03788](https://arxiv.org/abs/2005.03788)
 * `python tests/convnets/test_trainer_cnn_vision_cifar100_lscplc_covnets.py`
 * `python tests/convnets/test_trainer_cnn_vision_cifar100_proselflc_covnets.py`
 #### Visualize results
-* The results are well sinked and organised, e.g., `proselflc_experiments/cifar100_symmetric_noise_rate_0.2/shufflenetv2`
+* The results are well sinked and organised, e.g.,
+[proselflc_experiments/cifar100_symmetric_noise_rate_0.2/shufflenetv2](proselflc_experiments/cifar100_symmetric_noise_rate_0.2/shufflenetv2/050_proselflc_warm16_b6_transit0.3_20210904-172732)
+
+
+## How to extend this repo
+* Add dataset and dataloader: see examples in [src/proselflc/slices/datain](src/proselflc/slices/datain)
+* Add losses: see examples in [src/proselflc/slices/losses](src/proselflc/slices/losses)
+* Add networks: see examples in [src/proselflc/slices/networks](src/proselflc/slices/networks)
+* Add optimisers: see examples in [src/proselflc/optim](src/proselflc/optim)
+* Extend the slicegetter: [src/proselflc/slicegetter](src/proselflc/slicegetter)
+* Write run scripts: see examples in [tests/convnets/](tests/convnets/)
 
 
 #### [Link to Slide, Poster, Final version](./Poster_Slide)

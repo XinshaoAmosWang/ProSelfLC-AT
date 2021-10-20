@@ -38,11 +38,14 @@ Paper link: [https://arxiv.org/abs/2005.03788](https://arxiv.org/abs/2005.03788)
 * pipenv install -e .
 
 ## How to use
+#### Run experiments
 * cd ProSelfLC-CVPR2021
 * pipenv shell
 * `python tests/convnets/test_trainer_cnn_vision_cifar100_cce_convets.py`
 * `python tests/convnets/test_trainer_cnn_vision_cifar100_lscplc_covnets.py`
 * `python tests/convnets/test_trainer_cnn_vision_cifar100_proselflc_covnets.py`
+#### Visualize results
+* The results are well sinked and organised, e.g., `proselflc_experiments/cifar100_symmetric_noise_rate_0.2/shufflenetv2`
 
 
 #### [Link to Slide, Poster, Final version](./Poster_Slide)

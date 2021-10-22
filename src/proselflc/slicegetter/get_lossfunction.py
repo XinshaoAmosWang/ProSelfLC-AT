@@ -5,6 +5,7 @@ from proselflc.slices.losses.confidencepenalty import ConfidencePenalty
 from proselflc.slices.losses.crossentropy import CrossEntropy
 from proselflc.slices.losses.labelcorrection import LabelCorrection
 from proselflc.slices.losses.lablesmoothing import LabelSmoothing
+from proselflc.slices.losses.mean_absolute_error import MeanAbsoluteError
 from proselflc.slices.losses.proselflc import ProSelfLC
 
 
@@ -22,6 +23,7 @@ class LossPool:
         "labelcorrection": LabelCorrection,
         "lablesmoothing": LabelSmoothing,
         "proselflc": ProSelfLC,
+        "dm_exp_pi": MeanAbsoluteError,
     }
 
     @classmethod

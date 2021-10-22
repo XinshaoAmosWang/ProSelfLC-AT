@@ -252,7 +252,20 @@ class Trainer:
 
             # backward
             self.optim.optimizer.zero_grad()
-            loss.backward()
+            if self.params["loss_name"] == "dm_exp_pi":
+                # remove orignal weights
+                p_i = pred_probs[labels.nonzero(as_tuple=True)][:, None]
+                logit_grad_derived = (pred_probs - labels) / (2.0 * (1.0 - p_i) + 1e-8)
+                # add new weight: derivative manipulation or IMAE
+                logit_grad_derived *= torch.exp(
+                    self.params["dm_beta"]
+                    * (1.0 - p_i)
+                    * torch.pow(p_i, self.params["dm_lambda"])
+                )
+                logit_grad_derived /= self.params["batch_size"]
+                logits.backward(logit_grad_derived)
+            else:
+                loss.backward()
 
             # update params
             self.optim.optimizer.step()

@@ -23,6 +23,12 @@ Paper link: [https://arxiv.org/abs/2005.03788](https://arxiv.org/abs/2005.03788)
 }
 ```
 
+# PyTorch Implementation for ProSelfLC-CVPR 2021
+* Easy to install
+* Easy to use
+* Easy to extend: new losses, new networks, new dataset and loaders
+* Easy to run experiments and sink results
+
 ## Install
 #### Set the Pipenv From Scratch
 * sudo apt update && sudo apt upgrade
@@ -56,6 +62,15 @@ Paper link: [https://arxiv.org/abs/2005.03788](https://arxiv.org/abs/2005.03788)
 * Add optimisers: see examples in [src/proselflc/optim](src/proselflc/optim)
 * Extend the slicegetter: [src/proselflc/slicegetter](src/proselflc/slicegetter)
 * Write run scripts: see examples in [tests/convnets/](tests/convnets/)
+
+
+## Examples of sinked experimental configs and resutls
+* The results are well sinked and organised, e.g.,
+[proselflc_experiments/cifar100_symmetric_noise_rate_0.2/shufflenetv2](proselflc_experiments/cifar100_symmetric_noise_rate_0.2/shufflenetv2/050_proselflc_warm16_b6_transit0.3_20210904-172732)
+* ![Accuracy curve: shufflenetv2](proselflc_experiments/cifar100_symmetric_noise_rate_0.2/shufflenetv2/050_proselflc_warm16_b6_transit0.3_20210904-172732/accuracy.pdf)
+* ![Loss curve: shufflenetv2](proselflc_experiments/cifar100_symmetric_noise_rate_0.2/shufflenetv2/050_proselflc_warm16_b6_transit0.3_20210904-172732/loss.pdf)
+* ![Accuracy and loss tables: shufflenetv2](proselflc_experiments/cifar100_symmetric_noise_rate_0.2/shufflenetv2/050_proselflc_warm16_b6_transit0.3_20210904-172732/accuracy_loss.html)
+
 
 
 #### [Link to Slide, Poster, Final version](./Poster_Slide)

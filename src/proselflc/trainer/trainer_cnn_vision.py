@@ -260,7 +260,7 @@ class Trainer:
                 logit_grad_derived *= torch.exp(
                     self.params["dm_beta"]
                     * (1.0 - p_i)
-                    * torch.pow(p_i, self.params["dm_lambda"])
+                    * torch.pow(p_i + 1e-8, self.params["dm_lambda"])
                 )
                 logit_grad_derived /= self.params["batch_size"]
                 logits.backward(logit_grad_derived)

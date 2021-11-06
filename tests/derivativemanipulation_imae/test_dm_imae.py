@@ -64,7 +64,7 @@ class TestTrainer(unittest.TestCase):
             [16],
             [128],
             [0.1, 0.25, 0.5, 1, 1.5],
-            [1, 2, 4, 8, 12, 16, 0],
+            [4, 8, 12, 16, 0],
         ):
             k = k + 1
             print(k)

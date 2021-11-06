@@ -15,7 +15,13 @@ def logits2probs_softmax(logits):
     Output:
         probability vectors of shape (N, C)
     """
-    exp_logits = torch.exp(logits)
+    # reimplementation of F.softmax(logits)
+    # Note: nn.Softmax(logits) does not subtract max logit
+    #
+    # per instance:
+    # subtract max logit for numerical issues
+    subtractmax_logits = logits - torch.max(logits, dim=1, keepdim=True).values
+    exp_logits = torch.exp(subtractmax_logits)
     sum_logits = torch.sum(exp_logits, dim=1, keepdim=True)
     return exp_logits / sum_logits
 

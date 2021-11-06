@@ -1,18 +1,20 @@
 
-
-## ProSelfLC: CVPR 2021
-
+## Deep Robustness: ProSelfLC-CVPR 2021 + Example Weighting (DM+IMAE)
 
 #### [ProSelfLC: Progressive Self Label Correction for Training Robust Deep Neural Networks](https://xinshaoamoswang.github.io/blogs/2020-06-07-Progressive-self-label-correction/)
+* Paper link: [https://arxiv.org/abs/2005.03788](https://arxiv.org/abs/2005.03788)
+#### [Mean Absolute Error Does Not Treat Examples Equally and Gradient Magnitude’s Variance Matters](https://github.com/XinshaoAmosWang/Improving-Mean-Absolute-Error-against-CCE)
+#### [Derivative Manipulation: Example Weighting via Emphasis Density Funtion in the context of DL](https://github.com/XinshaoAmosWang/DerivativeManipulation)
+* Novelty: moving from loss design to derivative design
 
 
 
 
 For any specific discussion or potential future collaboration, please feel free to contact me. <br />
 
-Paper link: [https://arxiv.org/abs/2005.03788](https://arxiv.org/abs/2005.03788)
+<details><summary>See Citation Details</summary>
 
-#### Please kindly cite our work if you find the paper and this repo useful.
+#### Please kindly cite the following papers if you find this repo useful.
 ```
 @inproceddings{wang2021proselflc,
   title={ {ProSelfLC}: Progressive Self Label Correction
@@ -21,15 +23,38 @@ Paper link: [https://arxiv.org/abs/2005.03788](https://arxiv.org/abs/2005.03788)
   booktitle={CVPR},
   year={2021}
 }
+@phdthesis{wang2020example,
+  title={Example weighting for deep representation learning},
+  author={Wang, Xinshao},
+  year={2020},
+  school={Queen's University Belfast}
+}
+@article{wang2019derivative,
+  title={Derivative Manipulation for General Example Weighting},
+  author={Wang, Xinshao and Kodirov, Elyor and Hua, Yang and Robertson, Neil},
+  journal={arXiv preprint arXiv:1905.11233},
+  year={2019}
+}
+@article{wang2019imae,
+  title={{IMAE} for Noise-Robust Learning: Mean Absolute Error Does Not Treat Examples Equally and Gradient Magnitude’s Variance Matters},
+  author={Wang, Xinshao and Hua, Yang and Kodirov, Elyor and Robertson, Neil M},
+  journal={arXiv preprint arXiv:1903.12141},
+  year={2019}
+}
 ```
+</details>
 
-## PyTorch Implementation for ProSelfLC-CVPR 2021
+## PyTorch Implementation for ProSelfLC, Derivative Manipulation, Improved MAE
 * Easy to install
 * Easy to use
 * Easy to extend: new losses, new networks, new dataset and loaders
 * Easy to run experiments and sink results
+* Easy to put sinked results into your technical reports and academic papers.
 
 ## Install
+
+<details><summary>See Install Guidelines</summary>
+
 #### Set the Pipenv From Scratch
 * sudo apt update && sudo apt upgrade
 * sudo apt install python3.8
@@ -43,6 +68,8 @@ Paper link: [https://arxiv.org/abs/2005.03788](https://arxiv.org/abs/2005.03788)
 * cd ProSelfLC-CVPR2021
 * pipenv install -e .
 
+</details>
+
 ## How to use
 #### Run experiments
 * cd ProSelfLC-CVPR2021
@@ -50,6 +77,7 @@ Paper link: [https://arxiv.org/abs/2005.03788](https://arxiv.org/abs/2005.03788)
 * `python tests/convnets/test_trainer_cnn_vision_cifar100_cce_convets.py`
 * `python tests/convnets/test_trainer_cnn_vision_cifar100_lscplc_covnets.py`
 * `python tests/convnets/test_trainer_cnn_vision_cifar100_proselflc_covnets.py`
+* `python tests/derivativemanipulation_imae/test_dm_imae.py`
 #### Visualize results
 * The results are well sinked and organised, e.g.,
 [proselflc_experiments/cifar100_symmetric_noise_rate_0.2/shufflenetv2](proselflc_experiments/cifar100_symmetric_noise_rate_0.2/shufflenetv2/050_proselflc_warm16_b6_transit0.3_20210904-172732)
@@ -64,7 +92,10 @@ Paper link: [https://arxiv.org/abs/2005.03788](https://arxiv.org/abs/2005.03788)
 * Write run scripts: see examples in [tests/convnets/](tests/convnets/)
 
 
+
 ## Examples of sinked experimental configs and resutls
+<details><summary>See Sinked Results</summary>
+
 * The results are well sinked and organised, e.g.,
 [proselflc_experiments/cifar100_symmetric_noise_rate_0.2/shufflenetv2](proselflc_experiments/cifar100_symmetric_noise_rate_0.2/shufflenetv2/050_proselflc_warm16_b6_transit0.3_20210904-172732)
 
@@ -138,7 +169,7 @@ Paper link: [https://arxiv.org/abs/2005.03788](https://arxiv.org/abs/2005.03788)
 | cifar100  | 100         | gpu    | 4           | 128        | iteration | 0.1 | 200          | 160        | 0.2   | proselflc | 0.2                  | shufflenetv2 | 16            | 6        | 0.3                | /home/xinshao/tpami_proselflc_experiments/cifar100_symmetric_noise_rate_0.2/shufflenetv2/050_proselflc_warm16_b6_transit0.3_20210904-172732 | True  | 78200            | 0.9      | 0.0005       |
 
 
-
+</details>
 
 
 #### [Link to Slide, Poster, Final version](./Poster_Slide)

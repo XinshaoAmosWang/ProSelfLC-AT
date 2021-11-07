@@ -253,6 +253,12 @@ class Trainer:
             # backward
             self.optim.optimizer.zero_grad()
             if self.params["loss_name"] == "dm_exp_pi":
+                # ########################################################
+                # Implementation for derivative manipulation + Improved MAE
+                # Novelty: From Loss Design to Derivative Design
+                # Our work inspired: ICML-2020 (Normalised Loss Functions)
+                # and ICML-2021 (Asymmetric Loss Functions)
+                # ########################################################
                 # remove orignal weights
                 p_i = pred_probs[labels.nonzero(as_tuple=True)][:, None]
                 logit_grad_derived = (pred_probs - labels) / (2.0 * (1.0 - p_i) + 1e-8)
@@ -262,7 +268,16 @@ class Trainer:
                     * (1.0 - p_i)
                     * torch.pow(p_i + 1e-8, self.params["dm_lambda"])
                 )
-                logit_grad_derived /= self.params["batch_size"]
+                # derivative normalisation,
+                # which inspired the ICML-2020 paper-Normalised Loss Functions
+                sum_weight = sum(
+                    torch.exp(
+                        self.params["dm_beta"]
+                        * (1.0 - p_i)
+                        * torch.pow(p_i + 1e-8, self.params["dm_lambda"])
+                    )
+                )
+                logit_grad_derived /= sum_weight
                 logits.backward(logit_grad_derived)
             else:
                 loss.backward()

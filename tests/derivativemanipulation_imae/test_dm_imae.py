@@ -49,9 +49,9 @@ class TestTrainer(unittest.TestCase):
         for (
             self.params["symmetric_noise_rate"],
             self.params["network_name"],
-            self.params["warmup_epochs"],
             self.params["batch_size"],
             self.params["dm_lambda"],
+            self.params["warmup_epochs"],
             self.params["dm_beta"],
         ) in product(
             [
@@ -61,10 +61,10 @@ class TestTrainer(unittest.TestCase):
                 0.6,
             ],
             ["shufflenetv2", "resnet18", "resnet34"],
-            [16],
             [128],
-            [0.1, 0.25, 0.5, 1, 1.5],
-            [4, 8, 12, 16, 0],
+            [0.0, 0.25, 0.5, 1],
+            [16, 4],
+            [6, 9, 12, 15],
         ):
             k = k + 1
             print(k)

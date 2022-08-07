@@ -1,3 +1,4 @@
+# For the latest update, please go to [DeepCriticalLearning](https://github.com/XinshaoAmosWang/DeepCriticalLearning)
 
 ## Deep Robustness: ProSelfLC-CVPR 2021 + Example Weighting (DM+IMAE)
 
